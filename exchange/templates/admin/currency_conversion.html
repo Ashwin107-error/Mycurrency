@@ -1,0 +1,19 @@
+<!-- templates/admin/currency_conversion.html -->
+{% extends "admin/base_site.html" %}
+{% block content %}
+    <h2>{{ title }}</h2>
+    <form method="post">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit" class="button">Convert</button>
+    </form>
+
+    {% if converted_data %}
+        <h3>Conversion Results:</h3>
+        <ul>
+            {% for currency_code, amount in converted_data.items %}
+                <li>{{ currency_code }}: {{ amount }}</li>
+            {% endfor %}
+        </ul>
+    {% endif %}
+{% endblock %}
