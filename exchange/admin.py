@@ -50,7 +50,6 @@ class CurrencyAdmin(admin.ModelAdmin):
         converted_data = {}
         for target_currency in target_currencies:
             try:
-                # Get the exchange rate for the given date (e.g., today's date)
                 exchange_rate = CurrencyExchangeRate.objects.get(
                     source_currency=source_currency,
                     target_currency=target_currency

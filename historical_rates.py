@@ -1,5 +1,3 @@
-# exchange/tasks.py
-
 import requests
 import json
 import time
@@ -7,11 +5,8 @@ import psycopg2
 from datetime import datetime, timedelta
 import redis
 from django.conf import settings
-from celery import shared_task
 
-# Initialize PostgreSQL connection
 def init_db():
-    print("DBBBBBBB")
     conn = psycopg2.connect(
         dbname="ashwin",
         user="ashwin",
@@ -21,23 +16,19 @@ def init_db():
     conn.autocommit = True
     return conn
 
-# Initialize Redis connection
 def init_redis():
     r = redis.Redis(host='localhost', port=6379, db=0)
     return r
 
-# Retrieve the last processed date from Redis
 def get_last_processed_date(redis_client):
     last_date = redis_client.get('last_processed_date')
     if last_date:
         return datetime.strptime(last_date.decode('utf-8'), '%Y-%m-%d')
     return datetime(1997, 10, 14)
 
-# Update the last processed date in Redis
 def set_last_processed_date(redis_client, date):
     redis_client.set('last_processed_date', date.strftime('%Y-%m-%d'))
 
-# Fetch historical rates from the API
 def fetch_historical_rates(date, base_currency):
     url = f"https://api.currencybeacon.com/v1/historical"
     params = {
@@ -45,10 +36,9 @@ def fetch_historical_rates(date, base_currency):
         'date': date.strftime('%Y-%m-%d'),
         'base': base_currency
     }
-    print("HIIIIIIIII")
     response = requests.get(url, params=params)
     data = response.json()
-
+    print(data,"qssqsq")
     # Ensure data structure is correct and contains rates
     if response.status_code == 200 and 'rates' in data['response'] and data['response']['rates']:
         print(f"Fetched data for date {date}")
@@ -80,8 +70,7 @@ def store_in_database(conn, api_response):
             print(f"Failed to insert rate for {date} - {currency_code}: {e}")
     cur.close()
 
-@shared_task
-def fetch_and_store_historical_rates():
+def main():
     conn = init_db()
     redis_client = init_redis()
 
@@ -93,11 +82,14 @@ def fetch_and_store_historical_rates():
 
     while successful_responses < max_responses:
         api_response = fetch_historical_rates(current_date, base_currency)
-
+        
         if api_response:
             store_in_database(conn, api_response)
             set_last_processed_date(redis_client, datetime.strptime(api_response['response']['date'], '%Y-%m-%d'))
             successful_responses += 1
         current_date += timedelta(days=1)
 
-    conn.close()
+    conn.close
+
+if __name__ == "__main__":
+    main()

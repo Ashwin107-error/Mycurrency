@@ -13,8 +13,10 @@ import os
 from pathlib import Path
 from dotenv import load_dotenv
 
+
 load_dotenv()
 CURRENCYBEACON_API_KEY = os.getenv('CURRENCYBEACON_API_KEY')
+SUPPORTED_CURRENCIES = os.getenv('SUPPORTED_CURRENCIES')
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -49,6 +51,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'rest_framework',
     'exchange',
+    'django_celery_beat'
 ]
 
 MIDDLEWARE = [
@@ -136,13 +139,13 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 # settings.py
 
 # Celery Broker URL for Redis
-CELERY_BROKER_URL = 'redis://localhost:6379/0'
+# CELERY_BROKER_URL = 'redis://localhost:6379/0'
 
 # OR if using RabbitMQ
-# CELERY_BROKER_URL = 'amqp://user:password@localhost:5672/vhost'
+CELERY_BROKER_URL = 'amqp://user:password@localhost:5672/'
 
 # Celery result backend (for storing task results)
-CELERY_RESULT_BACKEND = 'redis://localhost:6379/0'  # For Redis
+CELERY_RESULT_BACKEND = 'rpc://'  # For Redis
 
 # Optional: Set timezone for Celery to match Django's timezone
 CELERY_TIMEZONE = 'Asia/Kolkata'  # or your preferred timezone
@@ -154,7 +157,7 @@ CELERY_RESULT_SERIALIZER = 'json'
 
 CELERY_BEAT_SCHEDULE = {
     'fetch-daily-rates': {
-        'task': 'exchange.tasks.fetch_and_store_exchange_rates',
-        'schedule': 8.0,  # Run every 24 hours (daily)
+        'task': 'tasks.load_historical_rates_task',
+        'schedule': 10.0,  # Run every 10 seconds.
     },
 }
