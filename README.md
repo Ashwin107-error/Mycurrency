@@ -47,17 +47,20 @@ Go to admin panel 'Currency providers' change the priority to test which provide
 Suggestions and Discussions
 
 -The Golang approach
-I have used used .go to hava better performance in terms of asynchronously retrieving and loading historical data to our db as i assumed it was an assesment to get what would be the best result wrt to concurrency.
+I have used used .go to hava better performance in terms of asynchronously retrieving and loading historical data to our db as i assumed it was an assesment to get what would be the best result wrt concurrency.
 
 -Python approach
 Couldve used asyncio and asyncpg2 to independently hit apis and load my db to have faster executions.
 
 Collectively I can change both these scripts to run in infinite loops but since that doesnt seem very ideal, i have kept the max hits per execution as 30.
 
-Insetad of cronjobs celery beat couldve been a better alternative for perdiodic tasks which i am already working on.
+Instead of cronjobs celery beat couldve been a better alternative for perdiodic tasks which i am already working on.
 
 -Project Structure
 This couldve been a more organised project structure as there might be more asynchronous tasks in future and maintaining a separate folder for the same wouldve been better like services as has been isolated 
 
 -Backoffice admin panel
 I tried to get the backoffice admin panale link to be traced right from the admin panel but couldnt do so though directly hitting the mentioned url will take you there.
+
+-Redis 
+Inorder to store the last processed date i am string them in my redis instead of db which i feel we can optimize and use a redis ttl to avoid too many network requests rounds being made. 

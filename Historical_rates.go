@@ -84,7 +84,7 @@ func fetchHistoricalRates(date time.Time, baseCurrency string, ch chan<- APIResp
 	defer wg.Done()
 	dateStr := date.Format("2006-01-02")
 	log.Printf("Fetching rates for date: %s", dateStr)
-	url := fmt.Sprintf("https://api.currencybeacon.com/v1/historical?api_key=z7vnFV1FLhChDhOuVeXg80AoQtNTWc6i&date=%s&base=%s", dateStr, baseCurrency)
+	url := fmt.Sprintf("https://api.currencybeacon.com/v1/historical?api_key=gWuM4ulV3MKDUEIfW4M3kqbHA5O5HBzg&date=%s&base=%s", dateStr, baseCurrency)
 
 	resp, err := http.Get(url)
 	if err != nil {

@@ -32,7 +32,7 @@ def set_last_processed_date(redis_client, date):
 def fetch_historical_rates(date, base_currency):
     url = f"https://api.currencybeacon.com/v1/historical"
     params = {
-        'api_key':'z7vnFV1FLhChDhOuVeXg80AoQtNTWc6i',
+        'api_key':'gWuM4ulV3MKDUEIfW4M3kqbHA5O5HBzg',
         'date': date.strftime('%Y-%m-%d'),
         'base': base_currency
     }
